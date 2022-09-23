@@ -16,7 +16,7 @@ init -989 python:
     if store.mas_submod_utils.isSubmodInstalled("Submod Updater Plugin"):
         store.sup_utils.SubmodUpdater(
             submod="Discord Presence Submod",
-            user_name="friends-of-monika",
+            user_name="MAS-Submod-MoyuTeam",
             repository_name="mas-presence",
             extraction_depth=3
         )
