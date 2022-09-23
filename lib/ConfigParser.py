@@ -299,7 +299,7 @@ class RawConfigParser:
         read_ok = []
         for filename in filenames:
             try:
-                fp = open(filename, encoding='utf-8')
+                fp = open(filename)
             except IOError:
                 continue
             self._read(fp, filename)
