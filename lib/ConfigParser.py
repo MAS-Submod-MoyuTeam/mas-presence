@@ -283,7 +283,6 @@ class RawConfigParser:
         return opts.keys()
 
     def read(self, filenames):
-        import io
         """Read and parse a filename or a list of filenames.
 
         Files that cannot be opened are silently ignored; this is
@@ -300,7 +299,7 @@ class RawConfigParser:
         read_ok = []
         for filename in filenames:
             try:
-                fp = io.open(filename, encoding='utf-8')
+                fp = open(filename, encoding='utf-8')
             except IOError:
                 continue
             self._read(fp, filename)
