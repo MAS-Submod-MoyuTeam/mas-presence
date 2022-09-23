@@ -47,8 +47,8 @@ init 100 python in fom_presence:
                 _error("Could not connect to Discord RPC: {0}".format(e))
                 self.ectx.report(
                     _ERR_CON,
-                    "Could not connect to Discord. Ensure it is running or\n"
-                    "see details in log/submod_log.log"
+                    "无法连接至Discord\n"
+                    "在log/submod_log.log查看细节"
                 )
 
                 return
@@ -57,15 +57,15 @@ init 100 python in fom_presence:
                 cl.set_activity(conf.activity)
 
                 self.ectx.resolve(
-                    _ERR_ACT, "Presence activity updated."
+                    _ERR_ACT, "Discord状态已经更新."
                 )
 
             except Exception as e:
                 _error("Could not set initial activity: {0}".format(e))
                 self.ectx.report(
                     _ERR_ACT,
-                    "Could not update presence activity. Ensure Discord is "
-                    "running or\nsee details in log/submod_log.log"
+                    "无法更新Discord状态 "
+                    "在log/submod_log.log查看细节"
                 )
 
                 return

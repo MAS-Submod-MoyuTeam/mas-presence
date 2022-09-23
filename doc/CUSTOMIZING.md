@@ -1,3 +1,5 @@
+[简体中文](/doc/CUSTOMIZING_zhCN.md)
+
 # 🔧 Customizing Discord Presence Submod
 
 While Discord Presence Submod configuration system is made to be simple and easy
