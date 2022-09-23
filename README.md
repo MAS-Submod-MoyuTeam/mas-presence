@@ -1,6 +1,8 @@
 <h1 align="center">🛰️ Discord Presence Submod</h1>
 <h3 align="center">Show everyone who's the person you're spending your time with~</h3>
 
+[简体中文](README_zhCN.md)
+
 <p align="center">
   <a href="https://github.com/friends-of-monika/mas-presence/releases/latest">
     <img alt="Latest release" src="https://img.shields.io/github/v/release/friends-of-monika/mas-presence">
