@@ -18,6 +18,16 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/friends-of-monika/mas-presence">
+    <img alt="English version badge" src="https://img.shields.io/badge/🇬🇧_English-gray.svg">
+  </a>
+  <a href="https://github.com/MAS-Submod-MoyuTeam/mas-presence">
+    <img alt="English version badge" src="https://img.shields.io/badge/🇨🇳_Chinese-gray.svg">
+  </a>
+</p>
+
+
 ## 🌟 Features
 
 * Simple and minimalistic yet extremely extensible configuration
@@ -57,6 +67,11 @@ Want to know how? Check out [customization guide][1]!
 Discord Presence Submod authors, maintainers and contributors express their
 gratitude to the following people:
 * [Kventis][2] &mdash; Discord Rich Presence idea and [MAS RPC][5] submod.
+* [PencilMario][7] &mdash; Chinese translation of repository and default config
+  files.
+
+Additionally, we thank these people for testing the submod before its public
+release:
 * [Otter][3] &mdash; early access preview.
 * [MaximusDecimus][4] &mdash; early access preview.
 * TheGuy &mdash; early access preview.
@@ -67,3 +82,4 @@ gratitude to the following people:
 [4]: https://github.com/AzhamProdLive
 [5]: https://github.com/ImKventis/MAS_RPC
 [6]: https://github.com/friends-of-monika/mas-presence/releases/latest
+[7]: https://github.com/PencilMario
