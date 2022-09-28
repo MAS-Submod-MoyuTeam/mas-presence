@@ -40,7 +40,7 @@ init 100 python in fom_presence:
 
                 self.ectx.resolve(_ERR_PIN)
                 self.ectx.resolve(
-                    _ERR_CON, "Connection with Discord established."
+                    _ERR_CON, "与Discord重新建立了连接。"
                 )
 
             except (CallError, ProtocolError) as e:
@@ -79,7 +79,7 @@ init 100 python in fom_presence:
                 self._client.disconnect()
 
             except IOError as e:
-                _error("Could not safely close Discord RPC: {0}".format(e))
+                _error("无法安全关闭 Discord RPC: {0}".format(e))
 
             # We closed the connection from our side anyway, consider it closed.
             self._connected = False
@@ -101,15 +101,15 @@ init 100 python in fom_presence:
                 self._client.ping()
 
                 self.ectx.resolve(
-                    _ERR_PIN, "Connection with Discord re-established."
+                    _ERR_PIN, "与Discord重新建立了连接。"
                 )
 
             except (CallError, IOError) as e:
-                _error("Discord RPC is not responding: {0}".format(e))
+                _error("Discord RPC 未响应: {0}".format(e))
                 self.ectx.report(
                     _ERR_PIN,
-                    "Discord is not responding. Ensure it is running or\n"
-                    "see details in log/submod_log.log"
+                    "Discord RPC 未响应，请确保其运行\n"
+                    "在log/submod_log.log查看细节"
                 )
 
                 self.disconnect()
@@ -119,15 +119,15 @@ init 100 python in fom_presence:
                 self._client.set_activity(conf.activity)
 
                 self.ectx.resolve(
-                    _ERR_ACT, "Presence activity updated."
+                    _ERR_ACT, "状态已更新."
                 )
 
             except Exception as e:
-                _error("Could not set Rich Presence activity: {0}".format(e))
+                _error("无法设置显示状态: {0}".format(e))
                 self.ectx.report(
                     _ERR_ACT,
-                    "Could not update presence activity. Ensure Discord is "
-                    "running or\nsee details in log/submod_log.log"
+                    "无法设置显示状态. 确保Discord正在运行"
+                    "\n在log/submod_log.log查看细节"
                 )
 
 
