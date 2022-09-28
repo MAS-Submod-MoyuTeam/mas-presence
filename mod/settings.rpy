@@ -19,13 +19,13 @@ init 100:
                 box_wrap False
 
                 vbox:
-                    textbutton "启用":
+                    textbutton "Enable":
                         selected persistent._fom_presence_enabled
                         action Function(fom_presence._sscr_toggle)
                         hovered SetField(scr_tooltip, "value", "Enable Discord Rich Presence.")
                         unhovered SetField(scr_tooltip, "value", scr_tooltip.default)
 
-                    textbutton "重新连接":
+                    textbutton "Reconnect":
                         selected False
                         sensitive persistent._fom_presence_enabled
                         action Function(fom_presence._sscr_reconnect)
@@ -33,14 +33,14 @@ init 100:
                         unhovered SetField(scr_tooltip, "value", scr_tooltip.default)
 
                 vbox:
-                    textbutton "刷新状态":
+                    textbutton "Reload activity":
                         selected False
                         sensitive fom_presence._presence.connected
                         action Function(fom_presence._sscr_reload)
                         hovered SetField(scr_tooltip, "value", "Forcibly reload presence activity.")
                         unhovered SetField(scr_tooltip, "value", scr_tooltip.default)
 
-                    textbutton "重载配置":
+                    textbutton "Reload configs":
                         selected False
                         action Function(fom_presence._sscr_reload_configs)
                         hovered SetField(scr_tooltip, "value", "Reload presence configs.")
