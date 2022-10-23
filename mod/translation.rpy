@@ -22,3 +22,36 @@ translate chinese python in _fom_presence_config:
         ui_message_report="在加载配置是出现了警告, 请查看 log/submod_log.log.",
         warning=True
     )
+
+translate chinese python in _fom_presence:
+
+    _ERROR_SOCKET_NOT_FOUND = error.Error(
+        log_message_report="无法连接到 Discord Rich Presence. Discord是否在本地运行? (不是在浏览器中）",
+        log_message_resolve="与Discord Rich Presence建立连接"
+    )
+
+    _ERROR_CLIENT_CONNECTION = error.Error(
+        log_message_report="无法连接到 Discord RPC: {0}.",
+        log_message_resolve="与Discord Rich Presence建立连接.",
+        ui_message_report="Could not establish connection with Discord.",
+        ui_message_resolve="与Discord Rich Presence建立连接."
+    )
+
+    _ERROR_CLIENT_TIMEOUT = error.Error(
+        log_message_report="与Discord Rich Presence建立连接超时.",
+        log_message_resolve="与Discord Rich Presence建立连接.",
+        ui_message_report="Discord连接超时, 将于 {0} 秒后重新尝试连接.".format(int(_TIMEOUT_LOCK_DURATION.total_seconds())),
+        ui_message_resolve="与Discord Rich Presence建立连接."
+    )
+
+    _ERROR_CLIENT_PINGING = error.Error(
+        log_message_report="与 Discord 断开连接: {0}.",
+        log_message_resolve="与Discord Rich Presence重新建立连接.",
+        ui_message_report="与 Discord 断开连接. 尝试重新建立连接...",
+        ui_message_resolve="与Discord Rich Presence重新建立连接."
+    )
+
+    _ERROR_CLIENT_ACTIVITY = error.Error(
+        log_message_report="无法设置状态: {0}",
+        ui_message_report="无法设置discord活动状态."
+    )
