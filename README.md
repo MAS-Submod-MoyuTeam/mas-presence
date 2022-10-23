@@ -10,11 +10,17 @@
   <a href="https://github.com/friends-of-monika/mas-presence/releases">
     <img alt="Release downloads" src="https://img.shields.io/github/downloads/friends-of-monika/mas-presence/total">
   </a>
-  <a href="https://mon.icu/discord">
-    <img alt="Discord server" src="https://discordapp.com/api/guilds/970747033071804426/widget.png?style=shield">
+  <a href="https://www.reddit.com/r/MASFandom/comments/y4mvl4/when_discord_meets_mas_discord_presence_submod_is">
+    <img alt="Reddit badge" src="https://img.shields.io/badge/dynamic/json?label=%F0%9D%97%8B%2Fmasfandom%20post&query=%24[0].data.children[0].data.score&suffix=%20upvotes&url=https%3A%2F%2Fwww.reddit.com%2Fr%2FMASFandom%2Fcomments%2Fy4mvl4%2Fwhen_discord_meets_mas_discord_presence_submod_is.json&logo=reddit&style=social">
   </a>
   <a href="https://github.com/friends-of-monika/mas-presence/blob/main/LICENSE.txt">
     <img alt="MIT license badge" src="https://img.shields.io/badge/License-MIT-lightgrey.svg">
+  </a>
+  <a href="https://dcache.me/discord">
+    <img alt="Discord server" src="https://discordapp.com/api/guilds/1029849988953546802/widget.png?style=shield">
+  </a>
+  <a href="https://ko-fi.com/Y8Y15BC52">
+    <img alt="Ko-fi badge" src="https://ko-fi.com/img/githubbutton_sm.svg" height="20">
   </a>
 </p>
 
@@ -43,6 +49,8 @@
     * Dedicated presence config for anniversary dates
     * Time of day-based presences
     * Monika and her player's birthday special presence layouts
+    * Support for Be Right Back in base game as well as custom be right backs
+      from submods from my-otter-self, geneTechnician and other people!
   * Contains custom variables extensions that can be used in text lines
 
 ## ❓ Installing
@@ -76,6 +84,14 @@ release:
 * [MaximusDecimus][4] &mdash; early access preview.
 * TheGuy &mdash; early access preview.
 
+## 💬 Join our Discord
+
+We're up to chat! Come join submod author's Discord server [here][8] or come to chat at Friends
+of Monika Discord server [here][9].
+
+[![Discord server invitation][10]][8]
+[![Discord server invitation][11]][9]
+
 [1]: doc/CUSTOMIZING.md
 [2]: https://github.com/ImKventis
 [3]: https://github.com/my-otter-self
@@ -83,3 +99,7 @@ release:
 [5]: https://github.com/ImKventis/MAS_RPC
 [6]: https://github.com/friends-of-monika/mas-presence/releases/latest
 [7]: https://github.com/PencilMario
+[8]: https://dcache.me/discord
+[9]: https://mon.icu/discord
+[10]: https://discordapp.com/api/guilds/1029849988953546802/widget.png?style=banner3
+[11]: https://discordapp.com/api/guilds/970747033071804426/widget.png?style=banner3

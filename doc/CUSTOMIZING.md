@@ -6,6 +6,9 @@ While Discord Presence Submod configuration system is made to be simple and easy
 to understand, one might need a helping hand to figure what is what and how
 things can be done with it, and this document is exactly what you need.
 
+If you're looking for a way to override *default* config files, see
+[DEFAULTS.md](DEFAULTS.md) page for details.
+
 ## Examples
 
 If you feel like learning by example, you might as well look into `config/`
@@ -77,3 +80,99 @@ and maintainers:
   interpolations.
 * `fom-locations.rpy` provides custom variable for displaying currently active
   background.
+
+### Inheritance
+
+As amount of configs made for Discord Presence Submod grows, so grows the
+redundancy of values shared by several config. To accord for this, a config ID
+and inheritance mechanism was introduced in 0.3.0, which allows setting config
+ID and refer to it in another configs to *copy all missing values* over to
+another config. And in case inherited config inherits from another config...
+Yes, inheritance is processed *recursively.* :)
+
+A real example would be default config which has grown quite big and
+redundantly filled with default `State`, `[Assets]` and other things that one
+would have to change *in every file* if they wanted to override something. To
+improve this situation, we used `ID = default` and `Inherit = Default` in every
+config and removed redundant copies of application ID, assets and text.
+
+#### Parent config (copy FROM) example
+
+```ini
+[Presence]
+ID = Default
+```
+
+#### Child config (copy TO) example
+
+```ini
+[Presence]
+Inherit = Default
+```
+
+Inheritance is processed recursively, which means you can have one config (A)
+inherit values from another (B), then one more config (C) would inherit values
+from A and have values both from A and from B.
+
+Only omitted values are replaced, in case some value is present in the child
+config it will never be replaced.
+
+### Overriding
+
+Continuing to counter issues with default config customization, in patch 0.3.1
+two more important parameters have been introduced with one of them being
+`Override =`.
+
+With `Override`, you can replace existing config by its ID or path (relative to
+config directory, see example below) *entirely*, combined with `Inherit` (see
+above) you could could use it to alter just a part of existing config without
+a need to copy it entirely.
+
+#### Existing config
+
+```ini
+[Presence]
+ID = MyAwesomeConfig
+
+[Activity]
+State = Having fun at [loc_prompt]
+```
+
+#### Overriding config
+
+```ini
+[Presence]
+Override = MyAwesomeConfig
+
+[Activity]
+State = Spending time together at [loc_prompt]
+```
+
+Sometimes however, if an existing config has no ID assigned and you don't want
+to edit it, you can use a path (relative to config directory) instead:
+
+```ini
+[Presence]
+# Full path would be game/Submods/Discord Presence Submod/config/default/...
+# but you only need part AFTER config/, without a leading slash (/)
+Override = default/configs/default.conf
+```
+
+### Disabling
+
+Another parameter introduced in 0.3.1 is `Disable =`, which if set to `True`
+will disable the config and prevent it from being chosen. This however does not
+affect inheriting and overriding and you can still use it as a base for other
+configs or override some other config and disable it.
+
+For example, if there is a default config you want to disable, you'd create
+another config and use `Override` like this:
+
+```ini
+[Presence]
+Override = default/configs/some-config-to-disable.conf
+Disable = True
+```
+
+This config will replace a config you specified in `Override` and disable it,
+making it never be chosen.

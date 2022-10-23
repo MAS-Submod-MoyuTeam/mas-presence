@@ -5,89 +5,96 @@
 # This file is part of Discord Presence Submod (see link below):
 # https://github.com/friends-of-monika/discord-presence-submod
 
-init 100 python in fom_presence:
+
+init 100 python in _fom_presence:
+
+    import store
+
+    from store import persistent
+
+    from store import _fom_presence_config as config
+    from store import _fom_presence_error as error
+    from store import _fom_presence_discord as discord
+    from store import _fom_presence_logging as logging
+
+    import socket
+    import datetime
+
+
+    _TIMEOUT_LOCK_DURATION = datetime.timedelta(seconds=45)
+
+
+    _ERROR_SOCKET_NOT_FOUND = error.Error(
+        log_message_report="Could not connect to Discord Rich Presence. Is Discord running locally (not in browser?)",
+        log_message_resolve="Established connection with Discord Rich Presence."
+    )
+
+    _ERROR_CLIENT_CONNECTION = error.Error(
+        log_message_report="Could not connect to Discord RPC: {0}.",
+        log_message_resolve="Connection with Discord established.",
+        ui_message_report="Could not establish connection with Discord.",
+        ui_message_resolve="Connection with Discord established."
+    )
+
+    _ERROR_CLIENT_TIMEOUT = error.Error(
+        log_message_report="Timed out while connecting to Discord RPC.",
+        log_message_resolve="Connection with Discord established.",
+        ui_message_report="Discord connection timed out, further attempts will be possible in {0} seconds.".format(int(_TIMEOUT_LOCK_DURATION.total_seconds())),
+        ui_message_resolve="Connection with Discord established."
+    )
+
+    _ERROR_CLIENT_PINGING = error.Error(
+        log_message_report="Connection with Discord lost: {0}.",
+        log_message_resolve="Re-established connection with Discord.",
+        ui_message_report="Connection with Discord lost. Trying to re-establish it...",
+        ui_message_resolve="Connection with Discord re-established."
+    )
+
+    _ERROR_CLIENT_ACTIVITY = error.Error(
+        log_message_report="Could not set activity: {0}",
+        ui_message_report="Could not set Rich Presence activity."
+    )
+
 
     class _PresenceController(object):
-        def __init__(self):
-            self.ectx = _ectx_main
-            self._client = None
+
+        def __init__(self, logger):
+            self._logger = logger
             self._connected = False
-            self._curr_conf = None
+            self._config = None
+            self._clients = dict()
+            self._lock_conn_until = None
 
         @property
         def connected(self):
             return self._connected
 
+        @property
+        def timeout_locked(self):
+            return self._lock_conn_until is not None and self._lock_conn_until > datetime.datetime.now()
+
         def connect(self):
-            if self._curr_conf is None:
-                # On first loop, this may be None, so we need to pick it.
-                self._curr_conf = get_active_config()
-                if self._curr_conf is None:
-                    # Refuse to connect if there isn't an active config.
+            if self._config is None:
+                self._config = config.get_active_config()
+                if self._config is None:
                     return
 
-            self._reconnect()
-
-        def _reconnect(self):
-            if self._connected:
-                self.disconnect()
-            self._connect_with_conf(self._curr_conf)
-
-        def _connect_with_conf(self, conf):
-            try:
-                cl = Client(get_rpc_socket())
-                cl.handshake(conf.app_id)
-
-                self.ectx.resolve(_ERR_PIN)
-                self.ectx.resolve(
-                    _ERR_CON, "与Discord重新建立了连接。"
-                )
-
-            except (CallError, ProtocolError) as e:
-                _error("Could not connect to Discord RPC: {0}".format(e))
-                self.ectx.report(
-                    _ERR_CON,
-                    "无法连接至Discord\n"
-                    "在log/submod_log.log查看细节"
-                )
-
+            client_with_socket = self._get_or_connect_client(self._config)
+            if client_with_socket is None:
                 return
 
-            try:
-                cl.set_activity(conf.activity)
-
-                self.ectx.resolve(
-                    _ERR_ACT, "Discord状态已经更新."
-                )
-
-            except Exception as e:
-                _error("Could not set initial activity: {0}".format(e))
-                self.ectx.report(
-                    _ERR_ACT,
-                    "无法更新Discord状态 "
-                    "在log/submod_log.log查看细节"
-                )
-
-                return
-
-            self._client = cl
+            client, _ = client_with_socket
+            client.set_activity(self._config.to_activity())
             self._connected = True
 
         def disconnect(self):
-            try:
-                # Try disconnecting, we may ignore the errors though.
-                self._client.disconnect()
-
-            except IOError as e:
-                _error("无法安全关闭 Discord RPC: {0}".format(e))
-
-            # We closed the connection from our side anyway, consider it closed.
+            for app_id in list(self._clients.keys()):
+                client, _ = self._clients.pop(app_id)
+                client.disconnect()
             self._connected = False
 
         def update(self):
-            self._curr_conf = get_active_config()
-            if self._curr_conf is None:
-                # Disconnect if there isn't any active configs anymore.
+            if not self._check_all_connections():
                 self.disconnect()
                 return
 
@@ -96,65 +103,101 @@ init 100 python in fom_presence:
         def _reload(self):
             self._update_with_conf(self._curr_conf)
 
-        def _update_with_conf(self, conf):
             try:
-                self._client.ping()
+                client, _ = client_with_socket
+                client.set_activity(self._config.to_activity())
+                _ERROR_CLIENT_ACTIVITY.resolve()
+            except (discord.ProtocolError, discord.CallError) as e:
+                _ERROR_CLIENT_ACTIVITY.report(e)
 
-                self.ectx.resolve(
-                    _ERR_PIN, "与Discord重新建立了连接。"
-                )
-
-            except (CallError, IOError) as e:
-                _error("Discord RPC 未响应: {0}".format(e))
-                self.ectx.report(
-                    _ERR_PIN,
-                    "Discord RPC 未响应，请确保其运行\n"
-                    "在log/submod_log.log查看细节"
-                )
-
-                self.disconnect()
+        def _get_or_connect_client(self, config):
+            rpc_socket = self._connect_socket()
+            if rpc_socket is None:
                 return
 
+            client_with_socket = self._clients.get(config.app_id)
+            if client_with_socket is None:
+                try:
+                    client = discord.Client(rpc_socket)
+                    client.handshake(config.app_id)
+                    _ERROR_CLIENT_TIMEOUT.resolve()
+                    _ERROR_CLIENT_CONNECTION.resolve()
+                    self._set_timeout_lock(False)
+                except (discord.ProtocolError, discord.CallError) as e:
+                    if isinstance(e, discord.ProtocolError) and isinstance(e.args[0], socket.timeout):
+                        _ERROR_CLIENT_TIMEOUT.report()
+                        self._set_timeout_lock(True)
+                    else:
+                        _ERROR_CLIENT_CONNECTION.report(e)
+                    return None
+
+                self._clients[config.app_id] = (client, rpc_socket)
+                return client, rpc_socket
+
+            return client_with_socket
+
+        def _connect_socket(self):
+            if self.timeout_locked:
+                return None
+
             try:
-                self._client.set_activity(conf.activity)
+                rpc_socket = discord.get_rpc_socket()
+                if socket is None:
+                    _ERROR_SOCKET_NOT_FOUND.report()
+                    return None
 
-                self.ectx.resolve(
-                    _ERR_ACT, "状态已更新."
-                )
+                _ERROR_SOCKET_NOT_FOUND.resolve()
+                _ERROR_CLIENT_TIMEOUT.resolve()
+                self._set_timeout_lock(False)
+                return rpc_socket
 
-            except Exception as e:
-                _error("无法设置显示状态: {0}".format(e))
-                self.ectx.report(
-                    _ERR_ACT,
-                    "无法设置显示状态. 确保Discord正在运行"
-                    "\n在log/submod_log.log查看细节"
-                )
+            except socket.timeout as e:
+                self._set_timeout_lock(True)
+                _ERROR_CLIENT_TIMEOUT.report()
+                return None
+
+        def _set_timeout_lock(self, lock):
+            if lock:
+                self._lock_conn_until = datetime.datetime.now() + _TIMEOUT_LOCK_DURATION
+            else:
+                self._lock_conn_until = None
+
+        def _check_all_connections(self):
+            for client, _ in self._clients.values():
+                try:
+                    client.ping()
+                except discord.ProtocolError as e:
+                    _ERROR_CLIENT_PINGING.report(e)
+                    return False
+
+            _ERROR_CLIENT_PINGING.resolve()
+            return True
 
 
-    _presence = _PresenceController()
+    presence = _PresenceController(logging.DEFAULT)
 
 
     # Runs once on startup, but post-init.
-    @store.mas_submod_utils.functionplugin("ch30_preloop")
-    def _preloop():
-        _load_configs()
-
+    @store.mas_submod_utils.functionplugin("ch30_preloop", priority=100)
+    def on_preloop():
         if persistent._fom_presence_enabled:
-            _presence.connect()
+            config.reload_configs()
+        if not presence.timeout_locked:
+            presence.connect()
 
 
     # Runs approximately once per 5 seconds while not in dialogue.
-    @store.mas_submod_utils.functionplugin("ch30_loop")
-    def _loop():
+    @store.mas_submod_utils.functionplugin("ch30_loop", priority=100)
+    def on_loop():
         if persistent._fom_presence_enabled:
-            if _presence.connected:
-                _presence.update()
-            else:
-                _presence.connect()
+            if presence.connected:
+                presence.update()
+            elif not presence.timeout_locked:
+                presence.connect()
 
 
     # Runs on exit.
-    @store.mas_submod_utils.functionplugin("exit")
-    def _exit():
-        if _presence.connected:
-            _presence.disconnect()
+    @store.mas_submod_utils.functionplugin("exit", priority=100)
+    def on_exit():
+        if presence.connected:
+            presence.disconnect()
