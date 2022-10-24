@@ -64,6 +64,7 @@ init 100 python in _fom_presence:
             self._config = None
             self._clients = dict()
             self._lock_conn_until = None
+            self._last_mean_update = None
 
         @property
         def connected(self):
@@ -72,6 +73,10 @@ init 100 python in _fom_presence:
         @property
         def timeout_locked(self):
             return self._lock_conn_until is not None and self._lock_conn_until > datetime.datetime.now()
+
+        @property
+        def last_meaningful_update(self):
+            return self._last_mean_update
 
         def connect(self):
             if self._config is None:
@@ -100,8 +105,17 @@ init 100 python in _fom_presence:
 
             self._reload()
 
-        def _reload(self):
-            self._update_with_conf(self._curr_conf)
+            if prev_config.app_id != self._config.app_id:
+                prev_client, _ = self._get_or_connect_client(prev_config)
+                prev_client.clear_activity()
+                return
+
+            if prev_config is None or prev_config != self._config:
+                self._last_mean_update = datetime.datetime.now()
+
+            client_with_socket = self._get_or_connect_client(self._config)
+            if client_with_socket is None:
+                return
 
             try:
                 client, _ = client_with_socket
