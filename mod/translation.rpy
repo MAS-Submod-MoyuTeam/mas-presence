@@ -56,3 +56,15 @@ translate chinese python in _fom_presence:
         ui_message_report="无法设置discord活动状态."
     )
 
+translate chinese strings:
+    old "Enable Discord Rich Presence."
+    new "启用 Discord Rich Presence"
+
+    old "Forcibly reconnect to Discord Rich Presence."
+    new "强行重新连接到 Discord Rich Presence."
+
+    old "Forcibly reload presence activity."
+    new "强制重新加载 Discord 活动状态"
+
+    old "Reload presence configs."
+    new "强制重新加载配置文件"
