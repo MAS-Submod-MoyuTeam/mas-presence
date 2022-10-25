@@ -19,7 +19,7 @@ translate chinese python in _fom_presence_config:
 
     _WARNING_CONFIG_CLASH = error.Error(
         log_message_report="配置 {0} 与其他配置的名称冲突: {1}.",
-        ui_message_report="在加载配置是出现了警告, 请查看 log/submod_log.log.",
+        ui_message_report="在加载配置时有一些警告，请查看 log/submod_log.log.",
         warning=True
     )
 
