@@ -33,7 +33,7 @@ translate chinese python in _fom_presence:
     _ERROR_CLIENT_CONNECTION = error.Error(
         log_message_report="无法连接到 Discord RPC: {0}.",
         log_message_resolve="与Discord Rich Presence建立连接.",
-        ui_message_report="Could not establish connection with Discord.",
+        ui_message_report="无法与 Discord 建立连接.",
         ui_message_resolve="与Discord Rich Presence建立连接."
     )
 
@@ -52,6 +52,7 @@ translate chinese python in _fom_presence:
     )
 
     _ERROR_CLIENT_ACTIVITY = error.Error(
-        log_message_report="无法设置状态: {0}",
+        log_message_report="无法设置discord活动状态: {0}",
         ui_message_report="无法设置discord活动状态."
     )
+
