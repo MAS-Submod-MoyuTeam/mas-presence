@@ -1,3 +1,5 @@
+[简体中文](./EXAMPLES_zhCN.md)
+
 # 📚 Configuration examples
 
 On this page you can see various examples of presence configs. For brevity

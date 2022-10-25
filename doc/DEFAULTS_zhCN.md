@@ -1,60 +1,53 @@
-[简体中文](./DEFAULTS_zhCN.md)
+# 🔌 覆盖默认配置
 
-# 🔌 Overriding default config
+Discord Presence Submod 包含了一套持续开发中的默认配置集，如果你想直接修改它来展现你的风格，可能会不是很方便，因为更新时你的修改都会被覆盖。
+当然，你可以创建自己的配置文件，来覆盖默认设置。
 
-Discord Presence Submod ships with a sensible and constantly growing default
-config set, which can be inconvenient to work with directly if you want to
-customize it to suit your own tastes; however, one can create their own config
-file with higher priority in order to override a default config.
+例如，如果你想覆盖配置文件events/anni-year.conf，优先级为-100。
+那么你创建自己的配置时，保持条件相同（或根据你的需求）并且修改优先级为-99即可覆盖配置。
 
-For instance, if you want to override config events/anni-year.conf, which has
-priority of -100, create your own config with the same condition (per your
-needs) and priority of -99.
+## 默认配置和优先级
 
-## Default configs and priorities
+你可以看到一个包含默认配置文件和它们的优先级的表格。可以方便地找到你想要的配置和它的优先级，而不需要打开每一个文件。
 
-Below you can see a table with default config files and their priorities for
-your convenience in finding a desired config and its priority without a need to
-dig up every single file.
+### 话题配置
 
-### Configs shown on topic
-
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -20      | topics/exp-previewer.conf                                               |
 | -20      | topics/floating-islands.conf                                            |
 
-### Configs shown on anniversary/milestone day
+### 纪念日/里程碑配置
 
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -90      | events/anni-year-day.conf                                               |
 | -90      | events/anni-milestone-day.conf                                          |
 
-### Configs shown a week before anniversary/milestone
+### 纪念日/里程碑前一周配置
 
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -100     | events/anni-year.conf                                                   |
 | -100     | events/anni-milestone.conf                                              |
 
-### Configs shown on player's or Monika's birthday
+### 你或莫妮卡的生日的配置
 
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -190     | events/player-bday-day.conf                                             |
 | -190     | events/moni-bday-day.conf                                               |
 
-### Configs shown a week before player's or Monika's birthday
+### 你或莫妮卡的生日前一周的配置
 
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -200     | events/player-bday.conf                                                 |
 | -200     | events/moni-bday.conf                                                   |
 
-### Configs shown during be right back idle
+### 在“我一会回来”的配置
 
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -600     | be-right-backs/my-otter-self-brbs/stretching.conf                       |
 | -600     | be-right-backs/my-otter-self-brbs/stimulation.conf                      |
@@ -95,35 +88,35 @@ dig up every single file.
 | -600     | be-right-backs/genetechnician-reading-submod/reading_horror.conf        |
 | -600     | be-right-backs/genetechnician-reading-submod/reading_dystopian.conf     |
 
-### Config shown on a special date
+### 特殊日期配置
 
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -790     | events/all-day.conf                                                     |
 
-### Config shown a week before special date
+### 特殊日期前一周配置
 
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -800     | events/all.conf                                                         |
 
-### Configs shown during night or morning
+### 夜间或早晨的配置
 
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -950     | time-of-day/night.conf                                                  |
 | -950     | time-of-day/morning.conf                                                |
 
-### Configs shown during specific weather
+### 天气配置
 
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -995     | weather/thunder.conf                                                    |
 | -995     | weather/snow.conf                                                       |
 | -995     | weather/rain.conf                                                       |
 
-### Default/fallback config
+### 默认配置
 
-| Priority | Config                                                                  |
+| 优先级（Priority） | 配置名（Config）                                                                  |
 |----------|-------------------------------------------------------------------------|
 | -1000    | default.conf                                                            |
