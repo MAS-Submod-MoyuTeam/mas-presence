@@ -103,7 +103,6 @@ init 100 python in _fom_presence:
                 self.disconnect()
                 return
 
-            self._reload()
 
             if prev_config.app_id != self._config.app_id:
                 prev_client, _ = self._get_or_connect_client(prev_config)
